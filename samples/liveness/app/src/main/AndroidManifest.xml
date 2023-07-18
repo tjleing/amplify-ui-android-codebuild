@@ -17,6 +17,48 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!--
+    In order to run on SDK 23 devices, we must override the set minimums of any dependencies +
+    transitive dependencies that have higher minSdk versions set.
+
+    Notes from testing:
+
+    Amplify Auth category seems to work on SDK 23, but it relies heavily on
+    the AWS Kotlin SDK which only officially supports SDK 24. For safety, passing a custom
+    AWSCredentialsProvider that does not use Amplify Auth would better guarantee SDK 23 support.
+
+    Amplify API category is really only used for our sample backend, and Liveness SDK does not
+    use it.
+
+    Amplify Predictions category is required for Liveness because the Liveness models and
+    websocket are placed in the Predictions library. However, the Liveness code is compartmentalized
+    in the library and does not use any 24+ only methods.
+
+    Lastly, Amplify core is used in Liveness for areas such as providing the AWSCredentialsProvider,
+    as well as its eventual conversion into the AWS SDK Credentials provider. The conversion to the
+    Kotlin SDK credentials provider appears to be unnecessary and could be adjusted internally to
+    not be used.
+
+    All things considered, SDK 23 does seem to function correctly, but working
+    as-is and not officially supported. It has not been thoroughly tested, and could break in the
+    future.
+    -->
+
+    <uses-sdk
+        android:minSdkVersion="23"
+        tools:overrideLibrary="
+            com.amplifyframework.api.aws,
+            com.amplifyframework.annotations,
+            com.amplifyframework.appsync,
+            com.amplifyframework.auth.cognito,
+            com.amplifyframework.aws.core,
+            com.amplifyframework.common.core
+            com.amplifyframework.core,
+            com.amplifyframework.kotlin,
+            com.amplifyframework.plugins.core,
+            com.amplifyframework.predictions.aws,
+            com.amplifyframework.ui.liveness" />
+
     <application
         android:name=".LivenessApp"
         android:allowBackup="true"
