@@ -74,6 +74,7 @@ fun FaceLivenessDetector(
     region: String,
     credentialsProvider: AWSCredentialsProvider<AWSCredentials>? = null,
     disableStartView: Boolean = false,
+    disableCloseButton: Boolean = false,
     onComplete: Action,
     onError: Consumer<FaceLivenessDetectionException>
 ) {
@@ -123,6 +124,7 @@ fun FaceLivenessDetector(
                 sessionId = sessionId,
                 region,
                 credentialsProvider = credentialsProvider,
+                disableCloseButton = disableCloseButton,
                 onChallengeComplete = {
                     scope.launch {
                         isFinished = true
@@ -146,6 +148,7 @@ internal fun ChallengeView(
     sessionId: String,
     region: String,
     credentialsProvider: AWSCredentialsProvider<AWSCredentials>?,
+    disableCloseButton: Boolean,
     onChallengeComplete: OnChallengeComplete,
     onChallengeFailed: Consumer<FaceLivenessDetectionException>
 ) {
@@ -245,15 +248,17 @@ internal fun ChallengeView(
                 )
             }
 
-            CancelChallengeButton(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(16.dp)
-            ) {
-                livenessCoordinator.processSessionError(
-                    FaceLivenessDetectionException.UserCancelledException(),
-                    true
-                )
+            if (!disableCloseButton) {
+                CancelChallengeButton(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp)
+                ) {
+                    livenessCoordinator.processSessionError(
+                        FaceLivenessDetectionException.UserCancelledException(),
+                        true
+                    )
+                }
             }
 
             Box(
