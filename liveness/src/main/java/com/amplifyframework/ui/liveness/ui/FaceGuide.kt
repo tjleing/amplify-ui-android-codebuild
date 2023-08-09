@@ -21,6 +21,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -42,6 +43,7 @@ internal fun FaceGuide(
     faceGuideRect: RectF?,
     videoViewportSize: VideoViewportSize
 ) {
+    val color = MaterialTheme.colorScheme.surface
 
     val scaledBoundingRect = faceGuideRect?.let {
         videoViewportSize.getScaledBoundingRect(it)
@@ -50,7 +52,7 @@ internal fun FaceGuide(
     Canvas(modifier.graphicsLayer(alpha = 0.99f)) {
 
         drawRect(
-            color = Color.White,
+            color = color,
             size = size
         )
 
